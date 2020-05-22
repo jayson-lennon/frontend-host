@@ -51,17 +51,18 @@ fn delay(ms: u64) {
 #[get("/api/<file..>")]
 fn api(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
     delay(state.response_delay);
-
+    let file = file.with_extension("json");
     let file = NamedFile::open(Path::new("api/").join(file)).ok();
+
     if let Some(mut file) = file {
         let mut buf = String::new();
         file.read_to_string(&mut buf).expect(&format!(
-            "unable to read JSON API file at: {:?}",
-            file.path()
+            "unable to read JSON API file at: {}",
+            file.path().display()
         ));
         Some(serde_json::from_str(&buf).expect(&format!(
-            "deserialization failed for API file at: {:?}",
-            file.path()
+            "deserialization failed for API file at: {}",
+            file.path().display()
         )))
     } else {
         None
