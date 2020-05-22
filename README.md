@@ -1,5 +1,5 @@
 # frontend-host
-`frontend-host` is a simple web server that can be used to test the frontend of an application without needing any working backend APIs.
+`frontend-host` is a simple web server that can be used to test the frontend of an application without the need for any working backend APIs.
 
 Appropriate API responses can be simulated by placing JSON files in an `api` directory, which maps directly to URLs which may be called by the frontend application.
 
