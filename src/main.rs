@@ -29,9 +29,9 @@ fn index() -> Html<String> {
     <h1>API Tester</h1>
     <p>To use:
         <ul>
-            <li>Add any API responses into the <em>'api'</em> directory as JSON files <strong>(no .JSON extension!)</strong>. Subdirectories may be created to represent additional API paths.</li>
-            <li>Copy all frontend data into the <em>'static'</em> directory. This includes scripts, styles, html pages, etc.</li>
-            <li>Run the <em>'api-tester'</em> application.</li>
+            <li>Add any API responses into the <em>'api'</em> directory as JSON files. Subdirectories may be created to represent additional API paths.</li>
+            <li>Use the <em>'--static-dir'</em> flag to set your static files/frontend files directory.</li>
+            <li>Use --delay to set a delay on API responses (nice for testing spinners).</li>
         </ul>
     </p>
     <p>If there are any errors in your JSON files, then an error will be displayed in the server console and a 500 will be returned</p>
