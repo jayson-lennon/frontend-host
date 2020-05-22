@@ -1,5 +1,5 @@
 [package]
-name = "api-tester"
+name = "frontend-host"
 version = "0.1.0"
 authors = ["Jayson Lennon <jayson@jaysonlennon.dev>"]
 edition = "2018"

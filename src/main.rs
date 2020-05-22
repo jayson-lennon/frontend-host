@@ -16,29 +16,41 @@ use rocket_contrib::json::JsonValue;
 use structopt::StructOpt;
 
 #[get("/")]
-fn index() -> Html<String> {
-    Html(r#"
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Api Tester</title>
-</head>
-<body>
-    <h1>API Tester</h1>
-    <p>To use:
-        <ul>
-            <li>Add any API responses into the <em>'api'</em> directory as JSON files. Subdirectories may be created to represent additional API paths.</li>
-            <li>Use the <em>'--static-dir'</em> flag to set your static files/frontend files directory.</li>
-            <li>Use --delay to set a delay on API responses (nice for testing spinners).</li>
-        </ul>
-    </p>
-    <p>If there are any errors in your JSON files, then an error will be displayed in the server console and a 500 will be returned</p>
-    <p>If the URL provided does not match either an API JSON file, or a static file, then a 404 will be returned.</p>
-</body>
-</html>
-    "#.to_owned())
+fn index(state: State<AppState>) -> Html<String> {
+    let path = Path::new(&state.static_dir).join("index.html");
+    let file = NamedFile::open(path).ok();
+    if let Some(mut file) = file {
+        let mut buf = String::new();
+        file.read_to_string(&mut buf).expect(&format!(
+            "unable to read index.html at '{}'",
+            file.path().display()
+        ));
+        Html(buf)
+    } else {
+        Html(format!(r#"
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Api Tester</title>
+            </head>
+            <body>
+                <h1>API Tester</h1>
+                <p>You are seeing this page because you do not have an <strong>index.html</strong> file in your static files directory, which is currently set to <strong>{}</strong>.</p>
+                <p>To use:
+                    <ul>
+                        <li>Add any API responses into an <strong>api</strong> directory as JSON files. Subdirectories may be created to represent additional API paths.</li>
+                        <li>Use the <strong>--static-dir</strong> flag to set your static files/frontend files directory.</li>
+                        <li>Use --delay to set a delay on API responses (nice for testing spinners).</li>
+                    </ul>
+                </p>
+                <p>If there are any errors in your JSON files, then an error will be displayed in the server console and a 500 will be returned.</p>
+                <p>If the URL provided does not match either an API JSON file, or a static file, then a 404 will be returned.</p>
+            </body>
+            </html>
+        "#, state.static_dir))
+    }
 }
 
 fn delay(ms: u64) {
@@ -77,7 +89,7 @@ fn root_files(file: PathBuf, state: State<AppState>) -> Option<NamedFile> {
 
 /// A simple tool to test frontend code with faked API requests
 #[derive(StructOpt, Debug)]
-#[structopt(name = "api-tester")]
+#[structopt(name = "frontend-host")]
 struct Opt {
     /// Port to use for hosting.
     #[structopt(short, long, default_value = "8000")]

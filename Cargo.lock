@@ -10,16 +10,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "api-tester"
-version = "0.1.0"
-dependencies = [
- "rocket",
- "rocket_contrib",
- "serde_json",
- "structopt",
-]
-
-[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -148,6 +138,16 @@ dependencies = [
  "libc",
  "redox_syscall",
  "winapi 0.3.8",
+]
+
+[[package]]
+name = "frontend-host"
+version = "0.1.0"
+dependencies = [
+ "rocket",
+ "rocket_contrib",
+ "serde_json",
+ "structopt",
 ]
 
 [[package]]
