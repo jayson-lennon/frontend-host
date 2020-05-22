@@ -9,6 +9,7 @@ use std::thread;
 use std::time::Duration;
 
 use rocket::config::Environment;
+use rocket::fairing::AdHoc;
 use rocket::response::content::Html;
 use rocket::response::NamedFile;
 use rocket::State;
@@ -27,7 +28,8 @@ fn index(state: State<AppState>) -> Html<String> {
         ));
         Html(buf)
     } else {
-        Html(format!(r#"
+        Html(format!(
+            r#"
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -49,7 +51,9 @@ fn index(state: State<AppState>) -> Html<String> {
                 <p>If the URL provided does not match either an API JSON file, or a static file, then a 404 will be returned.</p>
             </body>
             </html>
-        "#, state.static_dir))
+        "#,
+            state.static_dir
+        ))
     }
 }
 
@@ -60,8 +64,7 @@ fn delay(ms: u64) {
     }
 }
 
-#[get("/api/<file..>")]
-fn api(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+fn spoof(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
     delay(state.response_delay);
     let file = file.with_extension("json");
     let file = NamedFile::open(Path::new("api/").join(file)).ok();
@@ -79,6 +82,41 @@ fn api(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
     } else {
         None
     }
+}
+
+#[delete("/api/<file..>")]
+fn api_delete(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[get("/api/<file..>")]
+fn api_get(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[head("/api/<file..>")]
+fn api_head(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[options("/api/<file..>")]
+fn api_options(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[patch("/api/<file..>")]
+fn api_patch(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[post("/api/<file..>")]
+fn api_post(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
+}
+
+#[put("/api/<file..>")]
+fn api_put(file: PathBuf, state: State<AppState>) -> Option<JsonValue> {
+    spoof(file, state)
 }
 
 #[get("/<file..>", rank = 1)]
@@ -106,6 +144,10 @@ struct Opt {
     /// Static file directory
     #[structopt(long, default_value = "static")]
     static_dir: String,
+
+    /// Display detailed information about requests
+    #[structopt(long = "detail")]
+    detailed_requests: bool
 }
 
 struct AppState {
@@ -115,17 +157,43 @@ struct AppState {
 
 fn main() {
     let opt = Opt::from_args();
+
+    let detailed_requests = opt.detailed_requests;
+
     let rocket_config = rocket::Config::build(Environment::Development)
         .port(opt.port)
         .address(&opt.address)
         .finalize()
         .expect("Invalid server configuration");
+
     println!("Static files being served from: {}", opt.static_dir);
+
     rocket::custom(rocket_config)
         .manage(AppState {
             response_delay: opt.api_delay,
             static_dir: opt.static_dir,
         })
-        .mount("/", routes![index, api, root_files])
+        .attach(AdHoc::on_request("Request Logger", move |req, data| {
+            if detailed_requests {
+                println!("Query params: {:#?}", req);
+            } else {
+                println!("Query params: {:#?}", req.uri().query());
+            }
+            println!("Request data (first 512 bytes): {:#?}", data.peek());
+        }))
+        .mount(
+            "/",
+            routes![
+                index,
+                root_files,
+                api_delete,
+                api_get,
+                api_head,
+                api_options,
+                api_patch,
+                api_post,
+                api_put
+            ],
+        )
         .launch();
 }
