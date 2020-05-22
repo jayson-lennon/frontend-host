@@ -142,7 +142,7 @@ dependencies = [
 
 [[package]]
 name = "frontend-host"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "rocket",
  "rocket_contrib",
