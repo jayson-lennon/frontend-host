@@ -3,6 +3,12 @@
 
 Appropriate API responses can be simulated by placing JSON files in an `api` directory, which maps directly to URLs which may be called by the SPA frontend.
 
+## Build
+
+```
+cargo build --release
+```
+
 ## Usage
 
 1) Create `api` and `static` directories.
