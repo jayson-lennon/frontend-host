@@ -1,5 +1,5 @@
 [package]
-name = "frontend-host"
+name = "spa-host"
 version = "0.1.1"
 authors = ["Jayson Lennon <jayson@jaysonlennon.dev>"]
 edition = "2018"

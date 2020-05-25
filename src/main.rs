@@ -127,7 +127,7 @@ fn root_files(file: PathBuf, state: State<AppState>) -> Option<NamedFile> {
 
 /// A simple tool to test frontend code with faked API requests
 #[derive(StructOpt, Debug)]
-#[structopt(name = "frontend-host")]
+#[structopt(name = "spa-host")]
 struct Opt {
     /// Port to use for hosting.
     #[structopt(short, long, default_value = "8000")]

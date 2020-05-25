@@ -1,7 +1,7 @@
-# frontend-host
-`frontend-host` is a simple web server that can be used to test the frontend of an application without the need for any working backend APIs.
+# spa-host
+`spa-host` is a simple web server that can be used to test a SPA without the need for any working backend APIs.
 
-Appropriate API responses can be simulated by placing JSON files in an `api` directory, which maps directly to URLs which may be called by the frontend application.
+Appropriate API responses can be simulated by placing JSON files in an `api` directory, which maps directly to URLs which may be called by the SPA frontend.
 
 ## Usage
 
@@ -11,4 +11,4 @@ Appropriate API responses can be simulated by placing JSON files in an `api` dir
 4) Run the application. By default, accessing `localhost` will load an `index.html` from the `static` directory, otherwise it will print a banner page.
 
 ## License
-`frontend-host` is dual licensed under MIT & Apache 2.0
+`spa-host` is dual licensed under MIT & Apache 2.0
