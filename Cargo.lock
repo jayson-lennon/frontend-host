@@ -141,16 +141,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "frontend-host"
-version = "0.1.1"
-dependencies = [
- "rocket",
- "rocket_contrib",
- "serde_json",
- "structopt",
-]
-
-[[package]]
 name = "fsevent"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -667,6 +657,16 @@ name = "smallvec"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c7cb5678e1615754284ec264d9bb5b4c27d2018577fd90ac0ceb578591ed5ee4"
+
+[[package]]
+name = "spa-host"
+version = "0.1.1"
+dependencies = [
+ "rocket",
+ "rocket_contrib",
+ "serde_json",
+ "structopt",
+]
 
 [[package]]
 name = "state"
